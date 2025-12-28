@@ -1,0 +1,578 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM7Wn07eZjIkccZwmJS3ShO",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/RamyaSri2222/Data-Science/blob/main/dummy\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 73
+        },
+        "id": "5FzKoh-4erao",
+        "outputId": "1b9670d6-cd22-4814-ebba-c09005c309d1"
+      },
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "\n",
+              "     <input type=\"file\" id=\"files-c6834e1e-cca8-42b0-92c7-37783faad134\" name=\"files[]\" multiple disabled\n",
+              "        style=\"border:none\" />\n",
+              "     <output id=\"result-c6834e1e-cca8-42b0-92c7-37783faad134\">\n",
+              "      Upload widget is only available when the cell has been executed in the\n",
+              "      current browser session. Please rerun this cell to enable.\n",
+              "      </output>\n",
+              "      <script>// Copyright 2017 Google LLC\n",
+              "//\n",
+              "// Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+              "// you may not use this file except in compliance with the License.\n",
+              "// You may obtain a copy of the License at\n",
+              "//\n",
+              "//      http://www.apache.org/licenses/LICENSE-2.0\n",
+              "//\n",
+              "// Unless required by applicable law or agreed to in writing, software\n",
+              "// distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+              "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+              "// See the License for the specific language governing permissions and\n",
+              "// limitations under the License.\n",
+              "\n",
+              "/**\n",
+              " * @fileoverview Helpers for google.colab Python module.\n",
+              " */\n",
+              "(function(scope) {\n",
+              "function span(text, styleAttributes = {}) {\n",
+              "  const element = document.createElement('span');\n",
+              "  element.textContent = text;\n",
+              "  for (const key of Object.keys(styleAttributes)) {\n",
+              "    element.style[key] = styleAttributes[key];\n",
+              "  }\n",
+              "  return element;\n",
+              "}\n",
+              "\n",
+              "// Max number of bytes which will be uploaded at a time.\n",
+              "const MAX_PAYLOAD_SIZE = 100 * 1024;\n",
+              "\n",
+              "function _uploadFiles(inputId, outputId) {\n",
+              "  const steps = uploadFilesStep(inputId, outputId);\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  // Cache steps on the outputElement to make it available for the next call\n",
+              "  // to uploadFilesContinue from Python.\n",
+              "  outputElement.steps = steps;\n",
+              "\n",
+              "  return _uploadFilesContinue(outputId);\n",
+              "}\n",
+              "\n",
+              "// This is roughly an async generator (not supported in the browser yet),\n",
+              "// where there are multiple asynchronous steps and the Python side is going\n",
+              "// to poll for completion of each step.\n",
+              "// This uses a Promise to block the python side on completion of each step,\n",
+              "// then passes the result of the previous step as the input to the next step.\n",
+              "function _uploadFilesContinue(outputId) {\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  const steps = outputElement.steps;\n",
+              "\n",
+              "  const next = steps.next(outputElement.lastPromiseValue);\n",
+              "  return Promise.resolve(next.value.promise).then((value) => {\n",
+              "    // Cache the last promise value to make it available to the next\n",
+              "    // step of the generator.\n",
+              "    outputElement.lastPromiseValue = value;\n",
+              "    return next.value.response;\n",
+              "  });\n",
+              "}\n",
+              "\n",
+              "/**\n",
+              " * Generator function which is called between each async step of the upload\n",
+              " * process.\n",
+              " * @param {string} inputId Element ID of the input file picker element.\n",
+              " * @param {string} outputId Element ID of the output display.\n",
+              " * @return {!Iterable<!Object>} Iterable of next steps.\n",
+              " */\n",
+              "function* uploadFilesStep(inputId, outputId) {\n",
+              "  const inputElement = document.getElementById(inputId);\n",
+              "  inputElement.disabled = false;\n",
+              "\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  outputElement.innerHTML = '';\n",
+              "\n",
+              "  const pickedPromise = new Promise((resolve) => {\n",
+              "    inputElement.addEventListener('change', (e) => {\n",
+              "      resolve(e.target.files);\n",
+              "    });\n",
+              "  });\n",
+              "\n",
+              "  const cancel = document.createElement('button');\n",
+              "  inputElement.parentElement.appendChild(cancel);\n",
+              "  cancel.textContent = 'Cancel upload';\n",
+              "  const cancelPromise = new Promise((resolve) => {\n",
+              "    cancel.onclick = () => {\n",
+              "      resolve(null);\n",
+              "    };\n",
+              "  });\n",
+              "\n",
+              "  // Wait for the user to pick the files.\n",
+              "  const files = yield {\n",
+              "    promise: Promise.race([pickedPromise, cancelPromise]),\n",
+              "    response: {\n",
+              "      action: 'starting',\n",
+              "    }\n",
+              "  };\n",
+              "\n",
+              "  cancel.remove();\n",
+              "\n",
+              "  // Disable the input element since further picks are not allowed.\n",
+              "  inputElement.disabled = true;\n",
+              "\n",
+              "  if (!files) {\n",
+              "    return {\n",
+              "      response: {\n",
+              "        action: 'complete',\n",
+              "      }\n",
+              "    };\n",
+              "  }\n",
+              "\n",
+              "  for (const file of files) {\n",
+              "    const li = document.createElement('li');\n",
+              "    li.append(span(file.name, {fontWeight: 'bold'}));\n",
+              "    li.append(span(\n",
+              "        `(${file.type || 'n/a'}) - ${file.size} bytes, ` +\n",
+              "        `last modified: ${\n",
+              "            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() :\n",
+              "                                    'n/a'} - `));\n",
+              "    const percent = span('0% done');\n",
+              "    li.appendChild(percent);\n",
+              "\n",
+              "    outputElement.appendChild(li);\n",
+              "\n",
+              "    const fileDataPromise = new Promise((resolve) => {\n",
+              "      const reader = new FileReader();\n",
+              "      reader.onload = (e) => {\n",
+              "        resolve(e.target.result);\n",
+              "      };\n",
+              "      reader.readAsArrayBuffer(file);\n",
+              "    });\n",
+              "    // Wait for the data to be ready.\n",
+              "    let fileData = yield {\n",
+              "      promise: fileDataPromise,\n",
+              "      response: {\n",
+              "        action: 'continue',\n",
+              "      }\n",
+              "    };\n",
+              "\n",
+              "    // Use a chunked sending to avoid message size limits. See b/62115660.\n",
+              "    let position = 0;\n",
+              "    do {\n",
+              "      const length = Math.min(fileData.byteLength - position, MAX_PAYLOAD_SIZE);\n",
+              "      const chunk = new Uint8Array(fileData, position, length);\n",
+              "      position += length;\n",
+              "\n",
+              "      const base64 = btoa(String.fromCharCode.apply(null, chunk));\n",
+              "      yield {\n",
+              "        response: {\n",
+              "          action: 'append',\n",
+              "          file: file.name,\n",
+              "          data: base64,\n",
+              "        },\n",
+              "      };\n",
+              "\n",
+              "      let percentDone = fileData.byteLength === 0 ?\n",
+              "          100 :\n",
+              "          Math.round((position / fileData.byteLength) * 100);\n",
+              "      percent.textContent = `${percentDone}% done`;\n",
+              "\n",
+              "    } while (position < fileData.byteLength);\n",
+              "  }\n",
+              "\n",
+              "  // All done.\n",
+              "  yield {\n",
+              "    response: {\n",
+              "      action: 'complete',\n",
+              "    }\n",
+              "  };\n",
+              "}\n",
+              "\n",
+              "scope.google = scope.google || {};\n",
+              "scope.google.colab = scope.google.colab || {};\n",
+              "scope.google.colab._files = {\n",
+              "  _uploadFiles,\n",
+              "  _uploadFilesContinue,\n",
+              "};\n",
+              "})(self);\n",
+              "</script> "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Saving homeprices2.csv to homeprices2.csv\n"
+          ]
+        }
+      ],
+      "source": [
+        "from google.colab import files\n",
+        "uploaded=files.upload()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "print(data)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Vp12UpEXfZwl",
+        "outputId": "9f28f382-2dad-48a6-c3b7-7e08bb980688"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "    Gudiwada  Guntur  Vijayawada\n",
+            "0      False   False        True\n",
+            "1      False   False        True\n",
+            "2      False   False        True\n",
+            "3      False   False        True\n",
+            "4      False   False        True\n",
+            "5      False    True       False\n",
+            "6      False    True       False\n",
+            "7      False    True       False\n",
+            "8      False    True       False\n",
+            "9       True   False       False\n",
+            "10      True   False       False\n",
+            "11      True   False       False\n",
+            "12      True   False       False\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merge=pd.concat([df,data],axis=\"columns\")\n",
+        "print(merge)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zY7R4jGOggc_",
+        "outputId": "166168d2-cb7b-4db3-af43-9da1b7172b89"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "          town  area   price  Gudiwada  Guntur  Vijayawada\n",
+            "0   Vijayawada  2600  550000     False   False        True\n",
+            "1   Vijayawada  3000  565000     False   False        True\n",
+            "2   Vijayawada  3200  610000     False   False        True\n",
+            "3   Vijayawada  3600  680000     False   False        True\n",
+            "4   Vijayawada  4000  725000     False   False        True\n",
+            "5       Guntur  2600  585000     False    True       False\n",
+            "6       Guntur  2800  615000     False    True       False\n",
+            "7       Guntur  3300  650000     False    True       False\n",
+            "8       Guntur  3600  710000     False    True       False\n",
+            "9     Gudiwada  2600  575000      True   False       False\n",
+            "10    Gudiwada  2900  600000      True   False       False\n",
+            "11    Gudiwada  3100  620000      True   False       False\n",
+            "12    Gudiwada  3600  695000      True   False       False\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merage=pd.concat([df,data],axis=\"columns\")\n",
+        "final=merage.drop([\"town\"],axis=\"columns\")\n",
+        "print(final)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "OzaEbV4zgqED",
+        "outputId": "364ac154-b249-4077-8fc8-07d1439b2ee0"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0     550000\n",
+            "1     565000\n",
+            "2     610000\n",
+            "3     680000\n",
+            "4     725000\n",
+            "5     585000\n",
+            "6     615000\n",
+            "7     650000\n",
+            "8     710000\n",
+            "9     575000\n",
+            "10    600000\n",
+            "11    620000\n",
+            "12    695000\n",
+            "Name: price, dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merage=pd.concat([df,data],axis=\"columns\")\n",
+        "final=merage.drop([\"town\"],axis=\"columns\")\n",
+        "final1=final.price\n",
+        "print(final)\n",
+        "print(final1)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "J-JO3hRrhFaE",
+        "outputId": "a388289a-f635-49a2-a035-f7522b011822"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "    area   price  Gudiwada  Guntur  Vijayawada\n",
+            "0   2600  550000     False   False        True\n",
+            "1   3000  565000     False   False        True\n",
+            "2   3200  610000     False   False        True\n",
+            "3   3600  680000     False   False        True\n",
+            "4   4000  725000     False   False        True\n",
+            "5   2600  585000     False    True       False\n",
+            "6   2800  615000     False    True       False\n",
+            "7   3300  650000     False    True       False\n",
+            "8   3600  710000     False    True       False\n",
+            "9   2600  575000      True   False       False\n",
+            "10  2900  600000      True   False       False\n",
+            "11  3100  620000      True   False       False\n",
+            "12  3600  695000      True   False       False\n",
+            "0     550000\n",
+            "1     565000\n",
+            "2     610000\n",
+            "3     680000\n",
+            "4     725000\n",
+            "5     585000\n",
+            "6     615000\n",
+            "7     650000\n",
+            "8     710000\n",
+            "9     575000\n",
+            "10    600000\n",
+            "11    620000\n",
+            "12    695000\n",
+            "Name: price, dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn .linear_model import LinearRegression\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merage=pd.concat([df,data],axis=\"columns\")\n",
+        "final=merage.drop([\"town\"],axis=\"columns\")\n",
+        "X=final.drop(\"price\",axis=\"columns\")\n",
+        "final1=final.price\n",
+        "reg=LinearRegression()\n",
+        "reg.fit(X,final1)\n",
+        "print(reg.predict(X))\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4cYXAe1vhmsA",
+        "outputId": "252d3de7-3b71-4785-c9da-cc008830033c"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[539709.73984091 590468.71640508 615848.20468716 666607.18125133\n",
+            " 717366.1578155  579723.71533005 605103.20361214 668551.92431735\n",
+            " 706621.15674047 565396.15136531 603465.38378844 628844.87207052\n",
+            " 692293.59277573]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn .linear_model import LinearRegression\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merage=pd.concat([df,data],axis=\"columns\")\n",
+        "final=merage.drop([\"town\"],axis=\"columns\")\n",
+        "X=final.drop(\"price\",axis=\"columns\")\n",
+        "final1=final.price\n",
+        "reg=LinearRegression()\n",
+        "reg.fit(X,final1)\n",
+        "print(reg.score(X,final1))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "OhZedHSoiqjI",
+        "outputId": "c9b71e89-ace3-4399-9e5a-5a6db3d46249"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0.9573929037221874\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn .linear_model import LinearRegression\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merage=pd.concat([df,data],axis=\"columns\")\n",
+        "final=merage.drop([\"town\"],axis=\"columns\")\n",
+        "X=final.drop(\"price\",axis=\"columns\")\n",
+        "final1=final.price\n",
+        "reg=LinearRegression()\n",
+        "reg.fit(X,final1)\n",
+        "print(reg.predict([[5500,False,False,True]]))\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "auDhPqogiwfT",
+        "outputId": "96d53229-c897-49c2-bd6e-621ae816eecd"
+      },
+      "execution_count": 24,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[907712.31993113]\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names\n",
+            "  warnings.warn(\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn .linear_model import LinearRegression\n",
+        "df=pd.read_csv(\"homeprices2.csv\")\n",
+        "data=pd.get_dummies(df.town)\n",
+        "merage=pd.concat([df,data],axis=\"columns\")\n",
+        "final=merage.drop([\"town\"],axis=\"columns\")\n",
+        "X=final.drop(\"price\",axis=\"columns\")\n",
+        "final1=final.price\n",
+        "reg=LinearRegression()\n",
+        "reg.fit(X,final1)\n",
+        "print(reg.predict([[5500,0,0,1]]))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "c7tDrWUNjUNQ",
+        "outputId": "bc5125a4-7626-4388-9398-6382c80815d2"
+      },
+      "execution_count": 25,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[907712.31993113]\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names\n",
+            "  warnings.warn(\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
