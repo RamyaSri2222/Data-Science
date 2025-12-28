@@ -1,0 +1,74 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNqUSKYQL4aVWtq4W7CY16w",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/RamyaSri2222/Data-Science/blob/main/pickling%20and%20unpickling\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 14,
+      "metadata": {
+        "id": "nK8PlxJdIDsR",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "337d85d9-ba61-45dc-a895-fdc7427e835b"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pickling Employee Object Completed\n",
+            "Printing Employee infomation after unpickling\n",
+            "Number is: 123\n",
+            "Name is: Ramyasri\n",
+            "salary is: 50000\n"
+          ]
+        }
+      ],
+      "source": [
+        "import pickle\n",
+        "class Students:\n",
+        "  def __init__(self,eno,ename,esalary):\n",
+        "    self.eno=eno\n",
+        "    self.ename=ename\n",
+        "    self.esalary=esalary\n",
+        "  def display(self):\n",
+        "      print(\"Number is:\",self.eno)\n",
+        "      print(\"Name is:\",self.ename)\n",
+        "      print(\"salary is:\",self.esalary)\n",
+        "with open(\"emp.dat\",\"wb\") as f:\n",
+        "    obj=Students(123,\"Ramyasri\",50000)\n",
+        "    pickle.dump(obj,f)\n",
+        "    print(\"Pickling Employee Object Completed\")\n",
+        "with open(\"emp.dat\",\"rb\") as f:\n",
+        "    obj=pickle.load(f)\n",
+        "    print(\"Printing Employee infomation after unpickling\")\n",
+        "    obj.display()"
+      ]
+    }
+  ]
+}
