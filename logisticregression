@@ -1,0 +1,563 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPlyKnGXOL0h5hfBuJQI0bK",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/RamyaSri2222/Data-Science/blob/main/logisticregression\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 73
+        },
+        "id": "d-ZbNm20lU4W",
+        "outputId": "130c26d9-2fcf-4cfa-9d35-85b17859536e"
+      },
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "\n",
+              "     <input type=\"file\" id=\"files-241f9733-40b3-4f73-b3b2-608d6dee0296\" name=\"files[]\" multiple disabled\n",
+              "        style=\"border:none\" />\n",
+              "     <output id=\"result-241f9733-40b3-4f73-b3b2-608d6dee0296\">\n",
+              "      Upload widget is only available when the cell has been executed in the\n",
+              "      current browser session. Please rerun this cell to enable.\n",
+              "      </output>\n",
+              "      <script>// Copyright 2017 Google LLC\n",
+              "//\n",
+              "// Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+              "// you may not use this file except in compliance with the License.\n",
+              "// You may obtain a copy of the License at\n",
+              "//\n",
+              "//      http://www.apache.org/licenses/LICENSE-2.0\n",
+              "//\n",
+              "// Unless required by applicable law or agreed to in writing, software\n",
+              "// distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+              "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+              "// See the License for the specific language governing permissions and\n",
+              "// limitations under the License.\n",
+              "\n",
+              "/**\n",
+              " * @fileoverview Helpers for google.colab Python module.\n",
+              " */\n",
+              "(function(scope) {\n",
+              "function span(text, styleAttributes = {}) {\n",
+              "  const element = document.createElement('span');\n",
+              "  element.textContent = text;\n",
+              "  for (const key of Object.keys(styleAttributes)) {\n",
+              "    element.style[key] = styleAttributes[key];\n",
+              "  }\n",
+              "  return element;\n",
+              "}\n",
+              "\n",
+              "// Max number of bytes which will be uploaded at a time.\n",
+              "const MAX_PAYLOAD_SIZE = 100 * 1024;\n",
+              "\n",
+              "function _uploadFiles(inputId, outputId) {\n",
+              "  const steps = uploadFilesStep(inputId, outputId);\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  // Cache steps on the outputElement to make it available for the next call\n",
+              "  // to uploadFilesContinue from Python.\n",
+              "  outputElement.steps = steps;\n",
+              "\n",
+              "  return _uploadFilesContinue(outputId);\n",
+              "}\n",
+              "\n",
+              "// This is roughly an async generator (not supported in the browser yet),\n",
+              "// where there are multiple asynchronous steps and the Python side is going\n",
+              "// to poll for completion of each step.\n",
+              "// This uses a Promise to block the python side on completion of each step,\n",
+              "// then passes the result of the previous step as the input to the next step.\n",
+              "function _uploadFilesContinue(outputId) {\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  const steps = outputElement.steps;\n",
+              "\n",
+              "  const next = steps.next(outputElement.lastPromiseValue);\n",
+              "  return Promise.resolve(next.value.promise).then((value) => {\n",
+              "    // Cache the last promise value to make it available to the next\n",
+              "    // step of the generator.\n",
+              "    outputElement.lastPromiseValue = value;\n",
+              "    return next.value.response;\n",
+              "  });\n",
+              "}\n",
+              "\n",
+              "/**\n",
+              " * Generator function which is called between each async step of the upload\n",
+              " * process.\n",
+              " * @param {string} inputId Element ID of the input file picker element.\n",
+              " * @param {string} outputId Element ID of the output display.\n",
+              " * @return {!Iterable<!Object>} Iterable of next steps.\n",
+              " */\n",
+              "function* uploadFilesStep(inputId, outputId) {\n",
+              "  const inputElement = document.getElementById(inputId);\n",
+              "  inputElement.disabled = false;\n",
+              "\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  outputElement.innerHTML = '';\n",
+              "\n",
+              "  const pickedPromise = new Promise((resolve) => {\n",
+              "    inputElement.addEventListener('change', (e) => {\n",
+              "      resolve(e.target.files);\n",
+              "    });\n",
+              "  });\n",
+              "\n",
+              "  const cancel = document.createElement('button');\n",
+              "  inputElement.parentElement.appendChild(cancel);\n",
+              "  cancel.textContent = 'Cancel upload';\n",
+              "  const cancelPromise = new Promise((resolve) => {\n",
+              "    cancel.onclick = () => {\n",
+              "      resolve(null);\n",
+              "    };\n",
+              "  });\n",
+              "\n",
+              "  // Wait for the user to pick the files.\n",
+              "  const files = yield {\n",
+              "    promise: Promise.race([pickedPromise, cancelPromise]),\n",
+              "    response: {\n",
+              "      action: 'starting',\n",
+              "    }\n",
+              "  };\n",
+              "\n",
+              "  cancel.remove();\n",
+              "\n",
+              "  // Disable the input element since further picks are not allowed.\n",
+              "  inputElement.disabled = true;\n",
+              "\n",
+              "  if (!files) {\n",
+              "    return {\n",
+              "      response: {\n",
+              "        action: 'complete',\n",
+              "      }\n",
+              "    };\n",
+              "  }\n",
+              "\n",
+              "  for (const file of files) {\n",
+              "    const li = document.createElement('li');\n",
+              "    li.append(span(file.name, {fontWeight: 'bold'}));\n",
+              "    li.append(span(\n",
+              "        `(${file.type || 'n/a'}) - ${file.size} bytes, ` +\n",
+              "        `last modified: ${\n",
+              "            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() :\n",
+              "                                    'n/a'} - `));\n",
+              "    const percent = span('0% done');\n",
+              "    li.appendChild(percent);\n",
+              "\n",
+              "    outputElement.appendChild(li);\n",
+              "\n",
+              "    const fileDataPromise = new Promise((resolve) => {\n",
+              "      const reader = new FileReader();\n",
+              "      reader.onload = (e) => {\n",
+              "        resolve(e.target.result);\n",
+              "      };\n",
+              "      reader.readAsArrayBuffer(file);\n",
+              "    });\n",
+              "    // Wait for the data to be ready.\n",
+              "    let fileData = yield {\n",
+              "      promise: fileDataPromise,\n",
+              "      response: {\n",
+              "        action: 'continue',\n",
+              "      }\n",
+              "    };\n",
+              "\n",
+              "    // Use a chunked sending to avoid message size limits. See b/62115660.\n",
+              "    let position = 0;\n",
+              "    do {\n",
+              "      const length = Math.min(fileData.byteLength - position, MAX_PAYLOAD_SIZE);\n",
+              "      const chunk = new Uint8Array(fileData, position, length);\n",
+              "      position += length;\n",
+              "\n",
+              "      const base64 = btoa(String.fromCharCode.apply(null, chunk));\n",
+              "      yield {\n",
+              "        response: {\n",
+              "          action: 'append',\n",
+              "          file: file.name,\n",
+              "          data: base64,\n",
+              "        },\n",
+              "      };\n",
+              "\n",
+              "      let percentDone = fileData.byteLength === 0 ?\n",
+              "          100 :\n",
+              "          Math.round((position / fileData.byteLength) * 100);\n",
+              "      percent.textContent = `${percentDone}% done`;\n",
+              "\n",
+              "    } while (position < fileData.byteLength);\n",
+              "  }\n",
+              "\n",
+              "  // All done.\n",
+              "  yield {\n",
+              "    response: {\n",
+              "      action: 'complete',\n",
+              "    }\n",
+              "  };\n",
+              "}\n",
+              "\n",
+              "scope.google = scope.google || {};\n",
+              "scope.google.colab = scope.google.colab || {};\n",
+              "scope.google.colab._files = {\n",
+              "  _uploadFiles,\n",
+              "  _uploadFilesContinue,\n",
+              "};\n",
+              "})(self);\n",
+              "</script> "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Saving insurance_data.csv to insurance_data.csv\n"
+          ]
+        }
+      ],
+      "source": [
+        "from google.colab import files\n",
+        "uploaded=files.upload()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "print(df)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zhgkyEWI7hxs",
+        "outputId": "bf0fb111-2e43-455c-e3de-75755007ff6f"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "    age  bought_insurance\n",
+            "0    22                 0\n",
+            "1    25                 0\n",
+            "2    47                 1\n",
+            "3    52                 0\n",
+            "4    46                 1\n",
+            "5    56                 1\n",
+            "6    55                 0\n",
+            "7    60                 1\n",
+            "8    62                 1\n",
+            "9    61                 1\n",
+            "10   18                 0\n",
+            "11   28                 0\n",
+            "12   27                 0\n",
+            "13   29                 0\n",
+            "14   49                 1\n",
+            "15   55                 1\n",
+            "16   25                 1\n",
+            "17   58                 1\n",
+            "18   19                 0\n",
+            "19   18                 0\n",
+            "20   21                 0\n",
+            "21   26                 0\n",
+            "22   40                 1\n",
+            "23   45                 1\n",
+            "24   50                 1\n",
+            "25   54                 1\n",
+            "26   23                 0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "plt.scatter(df.age,df.bought_insurance,marker=\"*\")\n",
+        "plt.xlabel(\"age\")\n",
+        "plt.ylabel(\"bought_insurance\")\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 449
+        },
+        "id": "76OZO9f4748C",
+        "outputId": "7e670b0d-231d-46d4-d7be-2405fc18bb46"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 640x480 with 1 Axes>"
+            ],
+            "image/png": "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zeRyueyuCwAAICxhhZv58+dr0aJFGjlypN31AAAA1EhY17mprKzUlVdeaXctAAAANRZWuLntttv00ksv2V0LAABAjQX9tVR2drb//z6fTwsWLNBf//pXde3atcrvRz3xxBP2VQgAABCCoMNNYWFhwP3u3btLOvP7Uf+Og4sBAICTgg43a9eurbUi5s2bp0cffVQlJSXq1q2bfve736l3797fu97ixYs1fPhwXX/99VqxYkWt1QcAAOqOsI65sdOSJUuUnZ2t6dOnq6CgQN26ddOAAQN06NChs663b98+/e///q/69u17jioFAAB1gcuyLCvUlYYOHVrt108ul0txcXFq166dRowYoUsuueR7x8rIyFCvXr00d+5cSWeO50lNTdW4ceOUk5NT7Tper1c/+MEPdMstt+jvf/+7jh8/HvSem7KyMiUmJsrj8SghISGodQAAgLNC+fwOa89NYmKi1qxZo4KCArlcLrlcLhUWFmrNmjU6ffq0lixZom7duumdd9456ziVlZXaunWrsrKy/lVQVJSysrK0cePG71zvwQcfVNOmTXXrrbd+b60VFRUqKysLuAEAAHOFFW5SUlI0YsQI7dmzR6+++qpeffVV7d69Wz//+c/Vtm1bFRUVafTo0Zo0adJZxzly5Ii8Xq+Sk5MD2pOTk1VSUlLtOhs2bNBzzz2nhQsXBlVrbm6uEhMT/bfU1NTgNhIAANRJYYWb5557ThMmTFBU1L9Wj4qK0rhx47RgwQK5XC7dddddVc6kqqkTJ05o5MiRWrhwYdC/SD558mR5PB7/bf/+/bbWBAAAIktYP79w+vRpffbZZ+rQoUNA+2effSav1ytJiouL+97Twhs3bqzo6GiVlpYGtJeWliolJaVK/927d2vfvn0aPHiwv+3bH+2MiYnR9u3b1bZt24B13G633G538BsHAADqtLDCzciRI3XrrbfqN7/5jXr16iVJ2rx5s2bMmKFRo0ZJktavX69OnTqddZzY2Filp6crPz9fQ4YMkXQmrOTn5+uuu+6q0r9jx47atm1bQNuUKVN04sQJPfXUU3zlBAAAwgs3Tz75pJKTkzVr1iz/Xpfk5GRNnDjRf5xN//799V//9V/fO1Z2drZGjx6tnj17qnfv3po9e7bKy8s1ZswYSdKoUaPUokUL5ebmKi4uTp07dw5YPykpSZKqtAMAgPNTWOEm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\n"
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "x=df[[\"age\"]]\n",
+        "y=df.bought_insurance\n",
+        "x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.1,random_state=1)\n",
+        "print(x_train)\n",
+        "print(x_test)\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LiMiwUb58yEk",
+        "outputId": "0d4b3b7c-46f1-47f5-8657-58c221cde135"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "    age\n",
+            "3    52\n",
+            "23   45\n",
+            "10   18\n",
+            "20   21\n",
+            "21   26\n",
+            "4    46\n",
+            "2    47\n",
+            "22   40\n",
+            "6    55\n",
+            "19   18\n",
+            "13   29\n",
+            "7    60\n",
+            "24   50\n",
+            "1    25\n",
+            "16   25\n",
+            "0    22\n",
+            "15   55\n",
+            "26   23\n",
+            "25   54\n",
+            "9    61\n",
+            "8    62\n",
+            "12   27\n",
+            "11   28\n",
+            "5    56\n",
+            "    age\n",
+            "17   58\n",
+            "14   49\n",
+            "18   19\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "x=df[[\"age\"]]\n",
+        "y=df.bought_insurance\n",
+        "x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.1,random_state=1)\n",
+        "print(y_train)\n",
+        "print(y_test)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lrNB7tjX_vsQ",
+        "outputId": "6cb7bdac-6309-43f9-8838-170508420b29"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "3     0\n",
+            "23    1\n",
+            "10    0\n",
+            "20    0\n",
+            "21    0\n",
+            "4     1\n",
+            "2     1\n",
+            "22    1\n",
+            "6     0\n",
+            "19    0\n",
+            "13    0\n",
+            "7     1\n",
+            "24    1\n",
+            "1     0\n",
+            "16    1\n",
+            "0     0\n",
+            "15    1\n",
+            "26    0\n",
+            "25    1\n",
+            "9     1\n",
+            "8     1\n",
+            "12    0\n",
+            "11    0\n",
+            "5     1\n",
+            "Name: bought_insurance, dtype: int64\n",
+            "17    1\n",
+            "14    1\n",
+            "18    0\n",
+            "Name: bought_insurance, dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "print(x_test)\n",
+        "print(predt)import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "x=df[[\"age\"]]\n",
+        "y=df.bought_insurance\n",
+        "x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.1,random_state=1)\n",
+        "reg=LinearRegression()\n",
+        "reg.fit(x_train,y_train)\n",
+        "predt=reg.predict(x_test)"
+      ],
+      "metadata": {
+        "id": "rQaKVY0J_643",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "d37d686a-433b-4938-9667-0ce92588cb47"
+      },
+      "execution_count": 14,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "    age\n",
+            "17   58\n",
+            "14   49\n",
+            "18   19\n",
+            "[0.92786431 0.72111109 0.03193367]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "x=df[[\"age\"]]\n",
+        "y=df.bought_insurance\n",
+        "x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.1,random_state=1)\n",
+        "reg=LinearRegression()\n",
+        "reg.fit(x_train,y_train)\n",
+        "print(reg.score(x_test,y_test))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kw5EMcErDZ9Y",
+        "outputId": "f79c754e-f2a8-48c3-faac-de8313644f19"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0.8739964846597199\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LogisticRegression\n",
+        "df=pd.read_csv(\"insurance_data.csv\")\n",
+        "x=df[[\"age\"]]\n",
+        "y=df.bought_insurance\n",
+        "x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.1,random_state=52)\n",
+        "reg=LogisticRegression()\n",
+        "reg.fit(x_train,y_train)\n",
+        "print(\"x_test\")\n",
+        "print(x_test)\n",
+        "print(reg.predict_proba(x_test))\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-PkkUX8cD9pP",
+        "outputId": "d32ed7bc-7438-41de-ab74-6dc817b4a214"
+      },
+      "execution_count": 23,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "x_test\n",
+            "    age\n",
+            "7    60\n",
+            "9    61\n",
+            "18   19\n",
+            "[[0.06266676 0.93733324]\n",
+            " [0.05553763 0.94446237]\n",
+            " [0.92804481 0.07195519]]\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
