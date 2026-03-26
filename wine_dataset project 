@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMJO8YZe8aF9IbeQqTJ9Azi",
+      "authorship_tag": "ABX9TyN6T318pKlGkkTqYHYTwupF",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -27,8 +27,17 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "**Import the wine  Dtaset**"
+      ],
+      "metadata": {
+        "id": "GPABPLwi0nAq"
+      }
+    },
+    {
       "cell_type": "code",
-      "execution_count": 1,
+      "execution_count": null,
       "metadata": {
         "colab": {
           "base_uri": "https://localhost:8080/"
@@ -72,6 +81,15 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "**To know data of Wine Dataset**"
+      ],
+      "metadata": {
+        "id": "kTOMM1cM0Nsg"
+      }
+    },
+    {
       "cell_type": "code",
       "source": [
         "from sklearn.datasets import load_wine\n",
@@ -85,7 +103,7 @@
         "id": "8X-L-M80LM7I",
         "outputId": "de7829d7-b9d9-463f-e4ed-aed5dabcb569"
       },
-      "execution_count": 2,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -116,7 +134,7 @@
         "id": "R0MYGD1_LSXy",
         "outputId": "2b19fc82-b624-49ad-f1db-0c40e6f8edd9"
       },
-      "execution_count": 3,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -126,6 +144,15 @@
           ]
         }
       ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**How many features_names in dataset**"
+      ],
+      "metadata": {
+        "id": "aaueAoRi0HmA"
+      }
     },
     {
       "cell_type": "code",
@@ -141,7 +168,7 @@
         "id": "vxrVggCpLwBR",
         "outputId": "f0c474c7-8590-4edf-ff17-66eb9bbda2ae"
       },
-      "execution_count": 4,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -166,7 +193,7 @@
         "id": "kVautQXOL8kV",
         "outputId": "70bb8329-9bf9-41ab-c11d-032c6390523c"
       },
-      "execution_count": 5,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -176,6 +203,15 @@
           ]
         }
       ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**DESR of dataset**"
+      ],
+      "metadata": {
+        "id": "v1mnSJvPz7ED"
+      }
     },
     {
       "cell_type": "code",
@@ -191,7 +227,7 @@
         "id": "wtx8kG95MFOn",
         "outputId": "7deb28e0-5fde-40ba-f05f-3a65670b1d11"
       },
-      "execution_count": 7,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -315,7 +351,7 @@
         "id": "OLKu6QF3MrKG",
         "outputId": "a34703b2-436e-44cc-d946-8a4feaaaffa5"
       },
-      "execution_count": 17,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -340,18 +376,146 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "**Checking traning score**"
+      ],
+      "metadata": {
+        "id": "X-x2IdB6zDqg"
+      }
+    },
+    {
       "cell_type": "code",
       "source": [
         "from sklearn.datasets import load_wine\n",
         "from sklearn.model_selection import train_test_split\n",
-        "from sklearn.ensemble import RandomForestClassifier\n",
-        "df=load_wine()\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "import pandas as pd\n",
         "\n",
-        "x=df.data\n",
-        "y=df.target\n",
-        "x_train,x_test,y_train,y_test=train_test_split(x,y,train_size=0.3,random_state=42)\n",
-        "model=RandomForestClassifier(n_estimators=4)\n",
+        "wine = load_wine()\n",
+        "df = pd.DataFrame(wine.data, columns=wine.feature_names)\n",
+        "\n",
+        "\n",
+        "x = df\n",
+        "y = wine.target\n",
+        "\n",
+        "\n",
+        "x_train, x_test, y_train, y_test = train_test_split(\n",
+        "    x, y, test_size=0.3, random_state=0\n",
+        ")\n",
+        "\n",
+        "\n",
+        "model = LinearRegression()\n",
         "model.fit(x_train, y_train)\n",
+        "\n",
+        "\n",
+        "print(model.score(x_train,y_train))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kcmrMclJoaNb",
+        "outputId": "65407a16-b94a-425a-b739-aebf04d82d6b"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0.9154585590997155\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Checking testing score**"
+      ],
+      "metadata": {
+        "id": "qUixdKqzzcPD"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.datasets import load_wine\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "import pandas as pd\n",
+        "\n",
+        "wine = load_wine()\n",
+        "df = pd.DataFrame(wine.data, columns=wine.feature_names)\n",
+        "\n",
+        "\n",
+        "x = df\n",
+        "y = wine.target\n",
+        "\n",
+        "\n",
+        "x_train, x_test, y_train, y_test = train_test_split(\n",
+        "    x, y, test_size=0.3, random_state=0\n",
+        ")\n",
+        "\n",
+        "\n",
+        "model = LinearRegression()\n",
+        "model.fit(x_train, y_train)\n",
+        "\n",
+        "\n",
+        "print(model.score(x_test,y_test))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "UfkzJEn_yIRu",
+        "outputId": "d41d2449-70d7-48b0-b04a-b5d215dc92ce"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0.8436193575843112\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Prediction**"
+      ],
+      "metadata": {
+        "id": "Hx_8VvEPzmvB"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.datasets import load_wine\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "import pandas as pd\n",
+        "\n",
+        "wine = load_wine()\n",
+        "df = pd.DataFrame(wine.data, columns=wine.feature_names)\n",
+        "\n",
+        "\n",
+        "x = df\n",
+        "y = wine.target\n",
+        "\n",
+        "\n",
+        "x_train, x_test, y_train, y_test = train_test_split(\n",
+        "    x, y, test_size=0.3, random_state=0\n",
+        ")\n",
+        "\n",
+        "\n",
+        "model = LinearRegression()\n",
+        "model.fit(x_train, y_train)\n",
+        "\n",
         "\n",
         "print(model.predict(x_test))"
       ],
@@ -359,19 +523,24 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "id": "jvNuELFVNnZM",
-        "outputId": "5c653f8a-8b2d-4083-d270-5e35dfad539e"
+        "id": "Z_CmZTNjy1xw",
+        "outputId": "ae0e8ba0-0dbd-40ec-f681-116968cca090"
       },
-      "execution_count": 16,
+      "execution_count": 19,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "[0 0 1 0 1 0 1 2 1 2 0 2 0 2 0 1 1 1 0 1 0 0 1 2 2 2 1 0 1 0 0 1 2 0 0 0 2\n",
-            " 1 0 2 0 1 0 2 1 0 0 1 2 0 0 0 0 2 1 1 0 0 1 0 2 1 1 2 0 0 0 2 0 0 0 2 1 0\n",
-            " 2 2 0 2 2 1 0 1 0 0 1 1 0 2 0 1 0 0 1 1 1 2 2 0 0 2 0 2 1 0 1 2 2 0 2 1 1\n",
-            " 1 0 0 2 0 2 0 0 1 0 0 0 0 1]\n"
+            "[ 0.13211767  2.07824929  0.93138907  0.53439277  0.94414186 -0.06060752\n",
+            " -0.10482084  2.15397476  0.72382731  1.12256429  1.4292896   2.00413816\n",
+            " -0.17646172  0.48345134  1.88974629  0.90813857  0.09037866 -0.46314442\n",
+            "  1.49953829 -0.13703523  0.52577748  0.42398306  0.61450192  0.69414596\n",
+            "  1.2093621   1.08519676  0.80834563  1.20775908  0.74379445  1.98015489\n",
+            " -0.05996911  0.27368552  1.18579304  0.2446001   0.06559966  0.32279124\n",
+            "  1.69694284  1.2021798   1.15565527  1.97129683  0.16523931  0.24081161\n",
+            "  0.90462032  0.99571399  1.27092542  0.13908624  1.75408866  0.99534689\n",
+            "  1.66014329  0.12409836  1.64929603  1.77408624  0.25129387  2.26290234]\n"
           ]
         }
       ]
